@@ -1,9 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-type TimerProps = {
-  countdownMinutes: number;
-};
+type TimerProps = {};
 
 function formatTime(ds: number) {
   const totalSec = Math.floor(ds / 10);
@@ -16,27 +14,19 @@ function formatTime(ds: number) {
     .padStart(2, "0")}.${deciseconds.toFixed(0)}`;
 }
 
-const GameTimer = ({ countdownMinutes }: TimerProps) => {
-  const [startTime, setStartTime] = useState<number>(0);
+const GameTimer = ({}: TimerProps) => {
+  const [startTime, setStartTime] = useState<number>(Date.now());
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [isActive, setIsActive] = useState(false);
-
-  const timeRemaining = (startTime: number) => {
-    const elapsedMilliseconds = Date.now() - startTime;
-    if (countdownMinutes)
-      return countdownMinutes * 60 * 1000 - elapsedMilliseconds;
-    else return elapsedMilliseconds;
-  };
 
   function toggle() {
     setIsActive(!isActive);
     if (!isActive) {
-      setStartTime(Date.now());
+      setStartTime(Date.now() - elapsedTime);
     }
   }
 
   function reset() {
-    setStartTime(countdownMinutes ? 0 : countdownMinutes * 60 * 1000);
     setElapsedTime(0);
     setIsActive(false);
   }
@@ -45,7 +35,7 @@ const GameTimer = ({ countdownMinutes }: TimerProps) => {
     let interval: any = null;
     if (isActive) {
       interval = setInterval(() => {
-        setElapsedTime(timeRemaining(startTime));
+        setElapsedTime(Date.now() - startTime);
       }, 100);
     } else if (!isActive && startTime !== 0) {
       clearInterval(interval);
